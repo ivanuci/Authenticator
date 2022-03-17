@@ -1,0 +1,458 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authenticator</title>
+    <style>
+
+        #list-of-records {
+            display: table;
+            font-family: Georgia;
+            width: 100%;
+        }
+
+        .tr {
+            display: table-row;
+            padding: 5px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .td-1 {
+            display: table-cell;
+            padding: 10px 5px;
+            border-bottom: solid 1px gray;
+            vertical-align: middle;
+        }
+
+        .td-2 {
+            display: table-cell;
+            padding: 10px 5px;
+            border-bottom: solid 1px gray;
+            vertical-align: middle;
+            width: 80px;
+        }
+
+        .name {
+            font-size: 16px;
+            font-weight: bold;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .pin {
+            font-size: 32px;
+            color: #355c89;
+            text-align: right;
+        }
+
+        .item-copied-outer {
+            display: block;
+            position: relative;
+            text-align: right;
+        }
+
+        .item-copied {
+            display: block;
+            position: absolute;
+            right:0;
+            top: -20px;
+            background-color: #777;
+            color:white;
+            padding: 2px 4px 2px 4px;
+            border-radius: 3px;
+        }
+
+        .interval {
+            margin: 0px 0px 0px 16px;
+        }
+
+        .icon {
+            display: inline-block;
+            border: 0;
+            margin: 5px 0px 5px 16px;
+            text-decoration: none;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            opacity: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .dots-image {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle type='text/css'%3E.icon-canvas-transparent%7Bopacity:0;fill:%23F6F6F6;%7D .icon-vs-out%7Bfill:%23F6F6F6;%7D .icon-vs-bg%7Bfill:%23424242;%7D%3C/style%3E%3Cpath id='canvas' class='icon-canvas-transparent' d='m16 16h-16v-16h16v16z'/%3E%3Cg transform='translate(-40.481 -74.628)'%3E%3Ccircle cx='48.481' cy='77.167' r='1.7814' style='fill:%23355c89;stop-color:%23000000'/%3E%3Ccircle cx='48.481' cy='82.628' r='1.7814' style='fill:%23355c89;stop-color:%23000000'/%3E%3Ccircle cx='48.481' cy='88.088' r='1.7814' style='fill:%23355c89;stop-color:%23000000'/%3E%3C/g%3E%3C/svg%3E");
+            opacity: 1;
+            -webkit-transition: opacity 1s linear;
+            -moz-transition: opacity 1s linear;
+            -o-transition: opacity 1s linear;
+            -ms-transition: opacity 1s linear;
+            transition: opacity 1s linear;
+        }
+
+        .copy-image {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cstyle%3E.icon-asx-blue%7Bfill:%23355c89%7D%3C/style%3E%3Cpath class='icon-asx-blue' d='M10.707 3h-1l-3-3H1v13h4v3h10V7.293L10.707 3zM11 4.707L13.293 7H11V4.707zM2 12V1h4.293l2 2H5v9H2zm4 3V4h4v4h4v7H6z'/%3E%3C/svg%3E");
+            opacity: 1;
+            -webkit-transition: opacity 1s linear;
+            -moz-transition: opacity 1s linear;
+            -o-transition: opacity 1s linear;
+            -ms-transition: opacity 1s linear;
+            transition: opacity 1s linear;
+        }
+
+        .fade-out {
+            animation: fadeOut ease 2s;
+            -webkit-animation: fadeOut ease 2s;
+            -moz-animation: fadeOut ease 2s;
+            -o-animation: fadeOut ease 2s;
+            -ms-animation: fadeOut ease 2s;
+        }
+        @keyframes fadeOut {
+            0% { opacity:1; }
+            100% { opacity:0; }
+        }
+
+        @-moz-keyframes fadeOut {
+            0% { opacity:1; }
+            100% { opacity:0; }
+        }
+
+        @-webkit-keyframes fadeOut {
+            0% { opacity:1; }
+            100% { opacity:0; }
+        }
+
+        @-o-keyframes fadeOut {
+            0% { opacity:1; }
+            100% { opacity:0; }
+        }
+
+        @-ms-keyframes fadeOut {
+            0% { opacity:1; }
+            100% { opacity:0; }
+        }
+
+        /* option-menu */
+
+        #option-menu {
+            position: absolute;
+            display: none;
+        }
+
+        #option-menu ul, #option-menu li {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            background: #FFF;
+        }
+
+        #option-menu {
+            border: solid 1px #bbb;
+        }
+
+        #option-menu li {
+            border-bottom: solid 1px #bbb;
+        }
+
+        #option-menu li:last-child {
+            border: none;
+        }
+
+        #option-menu li a {
+            display: block;
+            padding: 5px 15px;
+            text-decoration: none;
+            color: #456c99;
+        }
+
+        #option-menu li a:hover {
+            background: #557ca9;
+            color: #FFF;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="wrap">
+        
+        <div id="list-of-records"></div>
+
+        <div id="option-menu">
+            <ul>
+                <li><a href="#" id="a-edit">Edit</a></li>
+                <li><a href="#" id="a-migrate">Migrate</a></li>
+                <li><a href="#" id="a-delete">Delete</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+
+        const nativeMethods = window.chrome.webview ? window.chrome.webview.hostObjects.NativeMethods: null;
+
+        let dragging;
+        let draggedOver;
+        let recordsObjectArray = [];
+
+        const divListOfRecords = document.getElementById('list-of-records');
+
+
+        /* Click Menu */
+
+        const aEdit = document.getElementById('a-edit');
+        const aMigrate = document.getElementById('a-migrate');
+        const aDelete = document.getElementById('a-delete');
+
+        const divOptionMenu = document.getElementById('option-menu');
+
+
+        document.onclick = function () {
+            divOptionMenu.style.display = 'none';
+        };
+
+        document.addEventListener('contextmenu', e => {
+            divOptionMenu.style.display = 'none';
+        });
+
+        var showOptionMenu = function (evt) {
+
+            const recId = evt.target ? evt.target.getAttribute('data-id') : ""
+
+            divOptionMenu.style.display = 'block';
+
+            evt = (evt) ? evt : ((event) ? event : null);
+            var posnX = (evt.pageX) ? evt.pageX : ((evt.offsetX) ? evt.offsetX + 10 : null);
+            var posnY = (evt.pageY) ? evt.pageY : ((evt.offsetY) ? evt.offsetY + 10 : null);
+            divOptionMenu.style.left = (posnX - divOptionMenu.clientWidth) + 'px';
+            divOptionMenu.style.top = (posnY + divOptionMenu.clientHeight > document.body.clientHeight ? posnY - divOptionMenu.clientHeight : posnY) + 'px';
+
+            if (recId && recId.length > 0) {
+
+                aEdit.onclick = function () { nativeMethods.EditRecord(recId); }
+                aMigrate.onclick = function () { nativeMethods.MigrateRecord(recId); }
+                aDelete.onclick = function () { nativeMethods.DeleteRecord(recId); }
+            }
+
+            evt.stopPropagation();
+        };
+
+
+        /* Dragging */
+        
+        const dragTarget = function(e) {
+            
+            let target = e.target
+
+            while (target && !target.draggable) {
+                target = target.parentElement
+            }
+            
+            return target;
+        }
+
+        
+        /* PopUp Copied */
+
+        const popupDivItemCopied = function () {
+
+            let timer = null;
+
+            let divItemCopied = document.createElement("div");
+            divItemCopied.className = "item-copied fade-out";
+            divItemCopied.innerHTML = "Copied to clipboard";
+
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                divItemCopied.remove();
+            }, 2000);
+
+            return divItemCopied;
+        }        
+
+
+        /* Interval Pie */
+
+        let Pie = function (size, period) {
+
+            const radius = size / 2;
+            const c = 3.14159265359 * radius;
+            const drawInterval = 250;
+            const xmlns = "http://www.w3.org/2000/svg";
+
+            this.interval = null;
+            this.filling = 0;
+
+            this.svg = document.createElementNS(xmlns, "svg");
+            this.svg.setAttributeNS(null, 'viewBox', "0 0 " + size + " " + size);
+            this.svg.setAttributeNS(null, 'width', size);
+            this.svg.setAttributeNS(null, 'height', size);
+            this.svg.style.display = 'block';
+
+            let c1 = document.createElementNS(xmlns, "circle");
+            c1.setAttributeNS(null, 'r', radius - 1);
+            c1.setAttributeNS(null, 'cx', radius);
+            c1.setAttributeNS(null, 'cy', radius);
+            c1.setAttributeNS(null, 'fill', '#355c89');
+
+            let c2 = document.createElementNS(xmlns, "circle");
+            c2.setAttributeNS(null, 'r', radius / 2);
+            c2.setAttributeNS(null, 'cx', radius);
+            c2.setAttributeNS(null, 'cy', radius);
+            c2.setAttributeNS(null, 'fill', 'transparent');
+            c2.setAttributeNS(null, 'stroke', 'white');
+            c2.setAttributeNS(null, 'stroke-width', radius);
+            c2.setAttributeNS(null, 'stroke-dasharray', '0 ' + c);
+            c2.setAttributeNS(null, 'transform', 'rotate(-90,' + radius + ',' + radius + ')');
+
+            this.svg.appendChild(c1);
+            this.svg.appendChild(c2);
+
+            let thisClass = this;
+
+            this.start = function (elapsed) {
+
+                if (thisClass.interval != null) clearInterval(thisClass.interval);
+
+                thisClass.filling = elapsed;
+                c2.setAttributeNS(null, 'stroke-dasharray', '0 ' + c);
+
+                thisClass.interval = setInterval(function () {
+
+                    thisClass.filling += drawInterval;
+
+                    c2.setAttributeNS(null, 'stroke-dasharray', (thisClass.filling / period) * c + ' ' + c);
+
+                    if (thisClass.filling >= period) {
+                        clearInterval(thisClass.interval);
+                    }
+
+                }, drawInterval);
+
+            }
+        }
+
+
+        /* Adding records */
+
+        const addRecords = function (records) {
+
+            //console.log(JSON.stringify(records))
+
+            recordsObjectArray = [];
+
+            while (divListOfRecords.firstChild) {
+                divListOfRecords.firstChild.remove()
+            }
+
+            records.forEach(rec => {
+
+                let divName = document.createElement("div");
+                divName.className = "name";
+                divName.innerHTML = rec.name;
+
+                let divItemCopiedOuter = document.createElement("div");
+                divItemCopiedOuter.className = "item-copied-outer";
+
+                let divPin = document.createElement("div");
+                divPin.className = "pin";
+                divPin.innerHTML = rec.pin;
+
+                let divItemFirst = document.createElement("div");
+                divItemFirst.className = "td-1";
+                divItemFirst.appendChild(divName);
+                divItemFirst.appendChild(divItemCopiedOuter);
+                divItemFirst.appendChild(divPin);
+
+                let btnCopy = document.createElement("div");
+                btnCopy.className = "icon";
+                btnCopy.addEventListener("click", function () {
+                    divItemCopiedOuter.appendChild(popupDivItemCopied());
+                    nativeMethods.CopyToClipboard(rec.pin);
+                });
+
+                let btnDots = document.createElement("div");
+                btnDots.className = "icon";
+                btnDots.setAttribute('data-id', rec.id)
+                btnDots.addEventListener("click", showOptionMenu);
+
+                let divInterval = document.createElement("div");
+                divInterval.className = "interval";
+                var pie = new Pie(25, rec.period);
+                divInterval.appendChild(pie.svg);
+                pie.start(rec.elapsed);
+
+                let divItemSecond = document.createElement("div");
+                divItemSecond.className = "td-2";
+                divItemSecond.appendChild(btnCopy);
+                divItemSecond.appendChild(btnDots);
+                divItemSecond.appendChild(divInterval);
+
+                let divCode = document.createElement("div");
+                divCode.className = "tr";
+                divCode.id = rec.id;
+                divCode.appendChild(divItemFirst);
+                divCode.appendChild(divItemSecond);
+                divCode.addEventListener('mouseenter', e => {
+                    btnDots.classList.add("dots-image");
+                    btnCopy.classList.add("copy-image");
+                });
+                divCode.addEventListener('mouseleave', e => {
+                    btnDots.classList.remove("dots-image");
+                    btnCopy.classList.remove("copy-image");
+                });
+
+                // dragging
+                divCode.draggable = true;
+                divCode.addEventListener('drag', (e) => { dragging = e.target.id }); 
+                divCode.addEventListener('dragover', (e) => { e.preventDefault(); draggedOver = dragTarget(e).id; });
+                divCode.addEventListener('drop', (e) => { 
+                    nativeMethods.OrderItems(dragging, draggedOver);
+                });
+
+                divListOfRecords.appendChild(divCode);
+
+                // save records to recordsObjectArray for simplier access
+                recordsObjectArray.push({ id: rec.id, divPin: divPin, pie: pie });
+
+            });
+            
+        }
+
+
+        /* Refreshing records */
+
+        const refreshRecords = async function (records) {
+
+            if (records.length == 0) return;
+
+            if (recordsObjectArray.length == 0) {
+
+                addRecords(records);
+
+            } else {
+
+                records.forEach(function (rec) {
+
+                    let recordObject = recordsObjectArray.find(x => x.id === rec.id);
+
+                    if (recordObject) {
+
+                        recordObject.divPin.innerHTML = rec.pin;
+                        recordObject.pie.start(rec.elapsed);
+                    }
+
+                });
+
+            }
+
+        }
+
+
+    </script>
+    
+</body>
+</html>
