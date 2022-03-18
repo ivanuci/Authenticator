@@ -56,6 +56,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -239,15 +247,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Authenticator"
-        "ProductCode" = "8:{01634CAF-2AD9-4BD1-9DF2-E614DE732A92}"
-        "PackageCode" = "8:{08E5BED0-9C2C-48E0-8E05-B5088A0B28A1}"
+        "ProductCode" = "8:{567FAF82-ED2C-4CD3-A4E5-22C87C893155}"
+        "PackageCode" = "8:{E469429C-041F-4F60-8A2D-465574E3686B}"
         "UpgradeCode" = "8:{5163530D-95E7-47F7-A4A6-B7C55A58AF53}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.1"
+        "ProductVersion" = "8:1.2.0"
         "Manufacturer" = "8:Ivanuci"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
