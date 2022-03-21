@@ -378,7 +378,7 @@
                 btnCopy.className = "icon";
                 btnCopy.addEventListener("click", function () {
                     divItemCopiedOuter.appendChild(popupDivItemCopied());
-                    nativeMethods.CopyToClipboard(this.innerText);
+                    nativeMethods.CopyToClipboard(divPin.innerText);
                 });
 
                 let btnDots = document.createElement("div");
