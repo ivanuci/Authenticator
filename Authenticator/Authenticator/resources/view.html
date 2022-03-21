@@ -361,10 +361,10 @@
 
                 let divPin = document.createElement("div");
                 divPin.className = "pin";
-                divPin.innerHTML = rec.pin;
+                divPin.innerText = rec.pin;
                 divPin.addEventListener("click", function () {
                     divItemCopiedOuter.appendChild(popupDivItemCopied());
-                    nativeMethods.CopyToClipboard(rec.pin);
+                    nativeMethods.CopyToClipboard(this.innerText);
                 });
 
 
@@ -378,7 +378,7 @@
                 btnCopy.className = "icon";
                 btnCopy.addEventListener("click", function () {
                     divItemCopiedOuter.appendChild(popupDivItemCopied());
-                    nativeMethods.CopyToClipboard(rec.pin);
+                    nativeMethods.CopyToClipboard(this.innerText);
                 });
 
                 let btnDots = document.createElement("div");
@@ -448,7 +448,7 @@
 
                     if (recordObject) {
 
-                        recordObject.divPin.innerHTML = rec.pin;
+                        recordObject.divPin.innerText = rec.pin;
                         recordObject.pie.start(rec.elapsed);
                     }
 

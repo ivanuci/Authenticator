@@ -4,6 +4,9 @@
     <_LastSelectedProfileId>c:\delo\CS\Authenticator\Authenticator\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Update="Classes\MainWebView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="Forms\FormAddRecord.cs">
       <SubType>Form</SubType>
     </Compile>

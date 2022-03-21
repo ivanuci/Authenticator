@@ -8,6 +8,7 @@ namespace Authenticator
         {
             InitializeComponent();
             this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+            this.Text = String.Format("Authenticator v{0}", Application.ProductVersion);
         }
 
         private async void FormMain_Load(object sender, EventArgs e)
